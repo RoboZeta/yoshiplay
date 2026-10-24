@@ -21,16 +21,17 @@
       seed = (seed * 9301 + 49297) % 233280;
       return seed / 233280;
     };
+    const B = CFG.bloqueMinutos;
+    const bloqueada = (maq, t) =>
+      CFG.bloqueos.some((b) => b.dia === diaId && b.maquinas.includes(maq.id) && t >= aMin(b.desde) && t < aMin(b.hasta));
     const reservas = [];
     for (const maq of CFG.maquinas) {
-      let t = aMin(dia.apertura);
-      while (t < aMin(dia.cierre)) {
-        if (rnd() < 0.38) {
-          const largo = (1 + Math.floor(rnd() * 3)) * CFG.bloqueMinutos;
-          reservas.push({ maquina: maq.id, desde: aHora(t), hasta: aHora(Math.min(t + largo, aMin(dia.cierre))) });
-          t += largo;
-        }
-        t += CFG.bloqueMinutos;
+      for (let t = aMin(dia.apertura); t < aMin(dia.cierre); t += B) {
+        if (bloqueada(maq, t) || rnd() > 0.4) continue;
+        let fin = t + B;
+        if (rnd() < 0.35 && fin < aMin(dia.cierre) && !bloqueada(maq, fin)) fin += B;
+        reservas.push({ maquina: maq.id, desde: aHora(t), hasta: aHora(fin) });
+        t = fin;
       }
     }
     return reservas;

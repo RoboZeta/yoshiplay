@@ -7,7 +7,7 @@
   <meta name="description" content="Separa tu turno en la Pump It Up Phoenix 2 LX para el 21 y 22 de noviembre en Yoshiplay.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Gochi+Hand&family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -23,15 +23,18 @@
 
   <section class="hero">
     <div class="wrap hero__inner">
-      <img class="hero__mascot" src="assets/mascota.webp" alt="Yoshi, la mascota de Yoshiplay, señalando una máquina Pump It Up" width="310" height="490">
+      <figure class="hero__sticker">
+        <img class="hero__mascot" src="assets/mascota.webp" alt="Yoshi, la mascota de Yoshiplay, señalando una máquina Pump It Up" width="310" height="490">
+      </figure>
       <div class="hero__text">
         <p class="eyebrow">Pump It Up Phoenix 2 · LX</p>
-        <h1>Separa tu turno</h1>
+        <h1>Separa tu <span class="scribble">turno</span></h1>
         <p class="hero__date">21 y 22 de noviembre</p>
-        <p class="hero__facts">Turnos de 30 min · hasta 2 h por reserva</p>
+        <p class="hero__facts">Turnos de 1 hora · hasta 2 horas por reserva</p>
+        <p class="note note--hero">¡Una sola máquina, no te quedes sin hora!</p>
       </div>
-      <svg class="hero__chevrons" viewBox="0 0 120 40" aria-hidden="true">
-        <path d="M4 4 L20 20 L4 36" /><path d="M30 4 L46 20 L30 36" /><path d="M56 4 L72 20 L56 36" />
+      <svg class="hero__chevrons" viewBox="0 0 130 44" aria-hidden="true">
+        <path d="M5 6 C12 12 17 17 21 22 C16 27 11 32 6 38" /><path d="M34 5 C41 12 46 17 50 22 C45 28 40 33 35 39" /><path d="M63 6 C70 12 75 18 79 23 C74 28 69 33 64 38" />
       </svg>
     </div>
   </section>
@@ -48,13 +51,15 @@
 
       <!-- Paso 2 -->
       <section class="step" aria-labelledby="t-hora">
-        <header class="step__head"><span class="egg" aria-hidden="true">2</span><h2 id="t-hora">Pisa tu horario</h2></header>
+        <header class="step__head"><span class="egg" aria-hidden="true">2</span><h2 id="t-hora">Pisa tu hora</h2></header>
         <div class="step__body">
           <div class="floor-bar">
-            <p class="hint">Cada baldosa encendida es un turno libre de 30 min. Pisa una y luego la siguiente para sumar tiempo.</p>
+            <p class="hint">Cada baldosa encendida es una hora libre. Pisa una y, si quieres jugar 2 horas, la de al lado.</p>
             <div class="seg" id="modes" role="radiogroup" aria-label="Modalidad"></div>
           </div>
           <div class="floor-wrap">
+            <svg class="doodle doodle--notes" viewBox="0 0 60 50" aria-hidden="true"><path d="M14 38 V10 L40 5 V32" /><circle cx="10" cy="39" r="5" /><circle cx="36" cy="33" r="5" /></svg>
+            <svg class="doodle doodle--spark" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 C21 13 25 18 37 20 C25 22 21 27 20 37 C19 27 15 22 3 20 C15 18 19 13 20 3 Z" /></svg>
             <div class="floor" id="floor"></div>
           </div>
           <ul class="legend" aria-label="Leyenda">
@@ -99,7 +104,7 @@
 
     <aside class="summary" id="summary" aria-labelledby="t-resumen">
       <div class="ticket">
-        <p class="ticket__head" id="t-resumen">Tu reserva</p>
+        <p class="ticket__head" id="t-resumen"><span>Tu reserva</span><small>Pase · Phoenix 2 LX</small></p>
         <dl class="ticket__rows" id="ticket-rows"></dl>
         <div class="ticket__tear" aria-hidden="true"></div>
         <div class="ticket__total">

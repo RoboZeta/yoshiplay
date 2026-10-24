@@ -24,9 +24,9 @@ python3 -m http.server 8000
 
 ## Reglas de reserva (maqueta)
 
-- El horario es una pista de baile: cada baldosa encendida es un turno libre de 30 min.
-- Máximo 2 h seguidas por reserva; se pisa una baldosa y luego la siguiente para sumar tiempo.
-- Modalidad Individual o Co-op (precio por turno distinto).
+- El horario es una pista de baile: cada baldosa encendida es una hora libre (10–11, 11–12…).
+- Máximo 2 h seguidas por reserva; se pisa una baldosa y, para 2 horas, la de al lado.
+- Modalidad Individual o Co-op (precio por hora distinto).
 - Las rondas del torneo apagan la máquina en las franjas indicadas en `config.js`.
 - Los horarios se refrescan cada 30 s; si alguien toma tu turno mientras eliges, se suelta y se avisa.
 

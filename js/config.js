@@ -20,13 +20,13 @@ window.YP_CONFIG = {
     { id: '2026-11-22', corto: 'Dom', largo: 'Domingo', numero: '22', mes: 'Nov', apertura: '10:00', cierre: '20:00' },
   ],
 
-  bloqueMinutos: 30,
-  maxBloques: 4, // 2 horas por reserva
+  bloqueMinutos: 60, // turnos por hora: 10–11, 11–12…
+  maxBloques: 2, // 2 horas por reserva
 
-  // Precio por bloque de 30 min según modalidad
+  // Precio por hora según modalidad
   modalidades: [
-    { id: 'solo', nombre: 'Individual', detalle: '1 jugador en la máquina', jugadores: 1, precio: 12 },
-    { id: 'coop', nombre: 'Co-op', detalle: '2 jugadores, mismo turno', jugadores: 2, precio: 18 },
+    { id: 'solo', nombre: 'Individual', detalle: '1 jugador en la máquina', jugadores: 1, precio: 20 },
+    { id: 'coop', nombre: 'Co-op', detalle: '2 jugadores, mismo turno', jugadores: 2, precio: 30 },
   ],
 
   // Una sola máquina en alquiler
@@ -34,9 +34,9 @@ window.YP_CONFIG = {
 
   // Franjas en las que la máquina no se alquila (rondas del torneo, mantenimiento)
   bloqueos: [
-    { dia: '2026-11-21', desde: '15:00', hasta: '17:00', maquinas: ['LX'], motivo: 'Clasif.' },
-    { dia: '2026-11-21', desde: '18:30', hasta: '20:00', maquinas: ['LX'], motivo: 'Torneo' },
-    { dia: '2026-11-22', desde: '14:00', hasta: '15:30', maquinas: ['LX'], motivo: 'Co-op' },
+    { dia: '2026-11-21', desde: '15:00', hasta: '17:00', maquinas: ['LX'], motivo: 'Clasificatoria', corto: 'Clasif.' },
+    { dia: '2026-11-21', desde: '18:00', hasta: '20:00', maquinas: ['LX'], motivo: 'Torneo' },
+    { dia: '2026-11-22', desde: '14:00', hasta: '16:00', maquinas: ['LX'], motivo: 'Co-op' },
     { dia: '2026-11-22', desde: '17:00', hasta: '20:00', maquinas: ['LX'], motivo: 'Final' },
   ],
 

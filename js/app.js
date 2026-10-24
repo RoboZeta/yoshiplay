@@ -20,12 +20,13 @@
   const modoCfg = () => CFG.modalidades.find((m) => m.id === state.modo);
   const enBloque = (t, desde, hasta) => t >= aMin(desde) && t < aMin(hasta);
   const finSel = () => state.sel.inicio + state.sel.bloques * B;
+  const hora = (min) => String(Math.floor(min / 60));
 
   // La pista tiene el mismo tamaño todos los días; las baldosas fuera de horario quedan apagadas.
   const PISTA_INICIO = Math.min(...CFG.dias.map((d) => aMin(d.apertura)));
   const PISTA_FIN = (() => {
     const fin = Math.max(...CFG.dias.map((d) => aMin(d.cierre)));
-    const baldosas = Math.ceil((fin - PISTA_INICIO) / B / 12) * 12; // múltiplo de 4 y de 6 columnas
+    const baldosas = Math.ceil((fin - PISTA_INICIO) / B / 12) * 12; // múltiplo de 3 y de 4 columnas
     return PISTA_INICIO + baldosas * B;
   })();
   const turnosPista = () => {
@@ -43,7 +44,7 @@
     const dia = diaCfg(diaId);
     if (t < aMin(dia.apertura) || t >= aMin(dia.cierre)) return { tipo: 'closed', texto: 'Cerrado' };
     const bloqueo = CFG.bloqueos.find((b) => b.dia === diaId && b.maquinas.includes(MAQ.id) && enBloque(t, b.desde, b.hasta));
-    if (bloqueo) return { tipo: 'block', texto: bloqueo.motivo };
+    if (bloqueo) return { tipo: 'block', texto: bloqueo.motivo, corto: bloqueo.corto || bloqueo.motivo };
     const reservas = state.datos[diaId]?.reservas || [];
     if (reservas.some((r) => r.maquina === MAQ.id && enBloque(t, r.desde, r.hasta))) return { tipo: 'busy', texto: 'Ocupado' };
     if (diaId === state.dia && state.sel && t >= state.sel.inicio && t < finSel()) return { tipo: 'sel', texto: 'Tu turno' };
@@ -95,7 +96,7 @@
   function renderModos() {
     $('modes').replaceChildren(
       ...CFG.modalidades.map((m) =>
-        opcion('seg__opt', m.id === state.modo, `${m.nombre} <b>${dinero(m.precio)}</b>`, () => {
+        opcion('seg__opt', m.id === state.modo, `${m.nombre} <b>${dinero(m.precio)}</b><small>/h</small>`, () => {
           state.modo = m.id;
           render();
         })
@@ -117,12 +118,19 @@
       b.type = 'button';
       b.className = `tile tile--${est.tipo}${siguiente ? ' tile--next' : ''}${t % 60 === 0 ? ' tile--hour' : ''}`;
       b.style.setProperty('--c', `var(${LUCES[i % LUCES.length]})`);
-      b.style.setProperty('--d', `${(i % 7) * 0.35}s`);
       b.dataset.t = t;
       b.disabled = !['free', 'sel'].includes(est.tipo);
-      const etiqueta = siguiente ? '+30 min' : est.tipo === 'free' ? '' : est.texto;
-      b.innerHTML = `<span class="tile__time">${aHora(t)}</span><span class="tile__tag">${etiqueta}</span>`;
-      b.setAttribute('aria-label', `${aHora(t)}: ${est.texto}${siguiente ? ', sumar 30 minutos' : ''}`);
+      const etiqueta = siguiente
+        ? '+1 hora'
+        : est.tipo === 'sel'
+          ? '¡Tuyo!'
+          : est.tipo === 'free'
+            ? 'libre'
+            : est.tipo === 'block'
+              ? `<span class="tag--full">${est.texto}</span><span class="tag--short">${est.corto}</span>`
+              : est.texto;
+      b.innerHTML = `<span class="tile__time">${hora(t)}<small>–</small>${hora(t + B)}</span><span class="tile__tag">${etiqueta}</span>`;
+      b.setAttribute('aria-label', `${aHora(t)} a ${aHora(t + B)}: ${est.texto}${siguiente ? ', sumar una hora' : ''}`);
       if (est.tipo === 'sel') b.setAttribute('aria-pressed', 'true');
       if (!b.disabled) b.addEventListener('click', () => pisar(t));
       return b;
@@ -159,7 +167,7 @@
   function renderResumen() {
     $('ticket-rows').innerHTML = filasTicket(false);
     $('total').textContent = dinero(total());
-    $('calc').textContent = state.sel ? `${state.sel.bloques} × ${dinero(modoCfg().precio)} por turno de 30 min` : '';
+    $('calc').textContent = state.sel ? `${state.sel.bloques} × ${dinero(modoCfg().precio)} por hora` : '';
     $('dock-total').textContent = dinero(total());
     $('dock-label').textContent = state.sel ? `${aHora(state.sel.inicio)} – ${aHora(finSel())} · ${duracion(state.sel.bloques)}` : 'Elige un horario';
   }
@@ -228,7 +236,7 @@
   function tickVivo() {
     if (!state.ultimaLectura || $('live').classList.contains('is-off')) return;
     const s = Math.round((Date.now() - state.ultimaLectura) / 1000);
-    $('live-text').textContent = s < 5 ? 'En vivo · recién actualizado' : `En vivo · hace ${s} s`;
+    $('live-text').innerHTML = `En vivo<span class="live__ago"> · ${s < 5 ? 'recién actualizado' : `hace ${s} s`}</span>`;
   }
 
   let avisoTimer;
@@ -338,7 +346,7 @@
 
   // ---------- Inicio ----------
 
-  // Deja 1 h marcada al abrir para que se vea cómo queda el ticket.
+  // Deja 2 h marcadas al abrir para que se vea cómo queda el ticket.
   function seleccionEjemplo() {
     if (state.sel) return;
     for (const t of turnosPista()) {
