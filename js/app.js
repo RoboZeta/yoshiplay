@@ -30,9 +30,10 @@
   function estadoCelda(diaId, maq, t) {
     if (maq.soloPro && state.categoria !== 'Pro') return { tipo: 'locked', texto: 'Solo Pro' };
     const bloqueo = CFG.bloqueos.find((b) => b.dia === diaId && b.maquinas.includes(maq.id) && enBloque(t, b.desde, b.hasta));
-    if (bloqueo) return { tipo: 'block', texto: bloqueo.motivo };
+    if (bloqueo) return { tipo: 'block', texto: bloqueo.motivo, corto: bloqueo.corto || bloqueo.motivo };
     const reservas = state.datos[diaId]?.reservas || [];
-    if (reservas.some((r) => r.maquina === maq.id && enBloque(t, r.desde, r.hasta))) return { tipo: 'busy', texto: 'Ocupado' };
+    const r = reservas.findIndex((r) => r.maquina === maq.id && enBloque(t, r.desde, r.hasta));
+    if (r >= 0) return { tipo: 'busy', texto: 'Ocupado', grupo: r };
     const s = state.sel;
     if (diaId === state.dia && s && s.maquina === maq.id && t >= s.inicio && t < s.inicio + s.bloques * CFG.bloqueMinutos) {
       return { tipo: 'sel', texto: '✓ Tuyo' };
@@ -71,9 +72,9 @@
         return opcion(
           'day',
           d.id === state.dia,
-          `<span class="day__num">${d.numero}</span>
-           <span class="day__txt"><b>${d.corto} ${d.numero} ${d.mes}</b><small>${d.apertura} – ${d.cierre}</small></span>
-           <span class="day__free">${libres}</span>`,
+          `<span class="day__blob"><span class="day__num">${d.numero}</span></span>
+           <span class="day__txt"><b>${d.largo}</b><small>${d.apertura} – ${d.cierre}</small>
+           <span class="day__free">${libres}</span></span>`,
           () => {
             if (state.dia === d.id) return;
             state.dia = d.id;
@@ -119,56 +120,142 @@
     );
   }
 
+  // Flecha de panel Pump It Up: los pads libres alternan direcciones como en un chart.
+  const PANELES = ['dl', 'ul', 'c', 'ur', 'dr'];
+  const flecha = (panel) =>
+    panel === 'c'
+      ? '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="5" width="10" height="10" rx="3"/></svg>'
+      : `<svg viewBox="0 0 20 20" aria-hidden="true" class="arw arw--${panel}"><path d="M4 4h9l-3 3 7 7-3 3-7-7-3 3z"/></svg>`;
+
+  // Agrupa bloques seguidos con el mismo estado para dibujarlos como una sola cápsula.
+  function segmentos(maq, tiempos) {
+    const out = [];
+    tiempos.forEach((t, i) => {
+      const est = estadoCelda(state.dia, maq, t);
+      const clave = est.tipo === 'free' ? `free${i}` : `${est.tipo}:${est.grupo ?? est.texto}`;
+      const ultimo = out[out.length - 1];
+      if (ultimo && ultimo.clave === clave) ultimo.n++;
+      else out.push({ clave, est, fila: i, t, n: 1 });
+    });
+    return out;
+  }
+
+  function capsula(clase, col, seg, html) {
+    const el = document.createElement('div');
+    el.className = `cap ${clase}${seg.n === 1 ? ' cap--short' : ''}`;
+    el.style.gridColumn = col;
+    el.style.gridRow = `${seg.fila + 2} / span ${seg.n}`;
+    el.innerHTML = html;
+    return el;
+  }
+
   function renderTablero() {
     const board = $('board');
     const enfocado = document.activeElement?.dataset?.key;
-    const dia = diaCfg();
-    const tiempos = bloquesDelDia(dia);
+    const B = CFG.bloqueMinutos;
+    const tiempos = bloquesDelDia(diaCfg());
     board.style.setProperty('--cols', CFG.maquinas.length);
+    board.style.setProperty('--rows', tiempos.length);
     board.classList.toggle('is-loading', !state.datos[state.dia]);
+    const nodos = [];
 
-    const head = document.createElement('div');
-    head.className = 'board__row board__head';
-    head.append(document.createElement('span'));
-    for (const maq of CFG.maquinas) {
-      const ocupados = tiempos.filter((t) => ['busy', 'block'].includes(estadoCelda(state.dia, maq, t).tipo)).length;
-      const pct = Math.round((ocupados / tiempos.length) * 100);
-      const locked = maq.soloPro && state.categoria !== 'Pro';
-      const el = document.createElement('div');
-      el.className = `mach${locked ? ' is-locked' : ''}`;
-      el.innerHTML = `<b>${maq.nombre.replace('Máquina', 'MÁQ.')}</b>
-        <small>${maq.modelo}</small><small>${maq.nota}</small>
-        ${maq.soloPro ? '<span class="mach__tag">Zona Pro</span>' : ''}
-        <div class="mach__bar" title="${pct}% ocupada"><i style="width:${pct}%"></i></div>`;
-      head.append(el);
-    }
-
-    const filas = tiempos.map((t) => {
-      const row = document.createElement('div');
-      row.className = 'board__row';
+    // Líneas de hora y etiquetas
+    tiempos.forEach((t, i) => {
+      if (t % 60 !== 0) return;
+      const beat = document.createElement('div');
+      beat.className = 'beat';
+      beat.style.gridRow = i + 2;
       const hora = document.createElement('span');
-      hora.className = `time${t % 60 === 0 ? ' is-hour' : ''}`;
+      hora.className = 'tlabel';
+      hora.style.gridRow = i + 2;
       hora.textContent = aHora(t);
-      row.append(hora);
-      for (const maq of CFG.maquinas) {
-        const est = estadoCelda(state.dia, maq, t);
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = `slot slot--${est.tipo}`;
-        b.dataset.key = `${maq.id}-${t}`;
-        b.textContent = est.texto;
-        b.title = est.texto || 'Libre';
-        const interactiva = est.tipo === 'free' || est.tipo === 'sel';
-        b.disabled = !interactiva;
-        b.setAttribute('aria-label', `${maq.nombre}, ${aHora(t)}: ${est.tipo === 'free' ? 'libre' : est.texto}`);
-        if (est.tipo === 'sel') b.setAttribute('aria-pressed', 'true');
-        if (interactiva) b.addEventListener('click', () => tocarCelda(maq, t));
-        row.append(b);
-      }
-      return row;
+      nodos.push(beat, hora);
     });
 
-    board.replaceChildren(head, ...filas);
+    const s = state.sel;
+    CFG.maquinas.forEach((maq, c) => {
+      const col = c + 2;
+      const locked = maq.soloPro && state.categoria !== 'Pro';
+      const ocupados = tiempos.filter((t) => ['busy', 'block'].includes(estadoCelda(state.dia, maq, t).tipo)).length;
+      const pct = Math.round((ocupados / tiempos.length) * 100);
+
+      const head = document.createElement('div');
+      head.className = `mach${locked ? ' is-locked' : ''}`;
+      head.style.gridColumn = col;
+      head.innerHTML = `<span class="mach__ring" style="--p:${pct}" title="${pct}% ocupada"><b>${c + 1}</b></span>
+        <span class="mach__name">${maq.modelo.split('· ')[1]}${maq.soloPro ? ' · Pro' : ''}</span>
+        <span class="mach__note">${maq.nota}</span>`;
+
+      const lane = document.createElement('div');
+      lane.className = `lane${s?.maquina === maq.id ? ' is-active' : ''}`;
+      lane.style.gridColumn = col;
+      nodos.push(head, lane);
+
+      if (locked) {
+        const lock = document.createElement('div');
+        lock.className = 'lane-lock';
+        lock.style.gridColumn = col;
+        lock.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <b>Zona Pro</b><span>Elige la categoría Pro para separarla</span>`;
+        nodos.push(lock);
+        return;
+      }
+
+      for (const seg of segmentos(maq, tiempos)) {
+        const desde = aHora(seg.t);
+        const hasta = aHora(seg.t + seg.n * B);
+        if (seg.est.tipo === 'free') {
+          const b = document.createElement('button');
+          b.type = 'button';
+          const vecino = s && s.maquina === maq.id && (seg.t === s.inicio + s.bloques * B || seg.t === s.inicio - B) && s.bloques < CFG.maxBloques;
+          b.className = `pad${vecino ? ' pad--next' : ''}`;
+          b.style.gridColumn = col;
+          b.style.gridRow = seg.fila + 2;
+          b.dataset.key = `${maq.id}-${seg.t}`;
+          b.dataset.t = vecino ? '+30 min' : desde;
+          b.setAttribute('aria-label', `${maq.nombre}, ${desde}: libre${vecino ? ', sumar 30 minutos' : ''}`);
+          b.innerHTML = flecha(PANELES[(seg.fila + c * 2) % PANELES.length]);
+          b.addEventListener('click', () => tocarCelda(maq, seg.t));
+          nodos.push(b);
+        } else if (seg.est.tipo === 'busy') {
+          nodos.push(capsula('cap--busy', col, seg, `<span>Ocupado</span>`));
+        } else if (seg.est.tipo === 'block') {
+          nodos.push(
+            capsula(
+              'cap--block',
+              col,
+              seg,
+              `<b class="cap__full">${seg.est.texto}</b><b class="cap__short">${seg.est.corto}</b>
+               <span class="cap__time">${desde}<span class="cap__to"> – ${hasta}</span></span>`
+            )
+          );
+        } else {
+          const cap = capsula(
+            'cap--sel',
+            col,
+            seg,
+            `<span class="cap__time">${desde}<span class="cap__to"> – ${hasta}</span></span>
+             <span class="cap__dur">${duracion(seg.n)}</span>
+             <span class="cap__ctrl">
+               ${seg.n > 1 ? `<button type="button" data-key="trim" data-acc="trim" aria-label="Quitar 30 minutos">−</button>` : ''}
+               <button type="button" data-key="clear" data-acc="clear" aria-label="Quitar selección">×</button>
+             </span>`
+          );
+          cap.addEventListener('click', (e) => {
+            const acc = e.target.closest('button')?.dataset.acc;
+            if (acc === 'trim') state.sel = { ...state.sel, bloques: state.sel.bloques - 1 };
+            if (acc === 'clear') state.sel = null;
+            if (acc) {
+              renderTablero();
+              renderResumen();
+            }
+          });
+          nodos.push(cap);
+        }
+      }
+    });
+
+    board.replaceChildren(...nodos);
     if (enfocado) board.querySelector(`[data-key="${enfocado}"]`)?.focus();
   }
 

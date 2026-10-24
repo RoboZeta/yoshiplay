@@ -16,8 +16,8 @@ window.YP_CONFIG = {
   refrescoSegundos: 30,
 
   dias: [
-    { id: '2026-11-21', corto: 'Sáb', numero: '21', mes: 'Nov', apertura: '10:00', cierre: '21:00' },
-    { id: '2026-11-22', corto: 'Dom', numero: '22', mes: 'Nov', apertura: '10:00', cierre: '20:00' },
+    { id: '2026-11-21', corto: 'Sáb', largo: 'Sábado', numero: '21', mes: 'Nov', apertura: '10:00', cierre: '21:00' },
+    { id: '2026-11-22', corto: 'Dom', largo: 'Domingo', numero: '22', mes: 'Nov', apertura: '10:00', cierre: '20:00' },
   ],
 
   bloqueMinutos: 30,
@@ -40,10 +40,10 @@ window.YP_CONFIG = {
 
   // Franjas en las que las máquinas no se alquilan (rondas del torneo, mantenimiento)
   bloqueos: [
-    { dia: '2026-11-21', desde: '15:00', hasta: '17:00', maquinas: ['M1', 'M2'], motivo: 'Clasificatoria Intermedio' },
-    { dia: '2026-11-21', desde: '18:00', hasta: '20:00', maquinas: ['M1', 'M2', 'M4'], motivo: 'Clasificatoria Avanzado' },
-    { dia: '2026-11-22', desde: '14:00', hasta: '16:00', maquinas: ['M1', 'M2'], motivo: 'Torneo Co-op' },
-    { dia: '2026-11-22', desde: '17:00', hasta: '20:00', maquinas: ['M1', 'M2', 'M3', 'M4'], motivo: 'Final Pro' },
+    { dia: '2026-11-21', desde: '15:00', hasta: '17:00', maquinas: ['M1', 'M2'], motivo: 'Clasificatoria Intermedio', corto: 'Clasif. Intermedio' },
+    { dia: '2026-11-21', desde: '18:00', hasta: '20:00', maquinas: ['M1', 'M2', 'M4'], motivo: 'Clasificatoria Avanzado', corto: 'Clasif. Avanzado' },
+    { dia: '2026-11-22', desde: '14:00', hasta: '16:00', maquinas: ['M1', 'M2'], motivo: 'Torneo Co-op', corto: 'Co-op' },
+    { dia: '2026-11-22', desde: '17:00', hasta: '20:00', maquinas: ['M1', 'M2', 'M3', 'M4'], motivo: 'Final Pro', corto: 'Final Pro' },
   ],
 
   minutosParaPagar: 15,

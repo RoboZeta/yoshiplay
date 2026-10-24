@@ -43,60 +43,68 @@
     <div class="steps">
       <!-- Paso 1 -->
       <section class="step" aria-labelledby="t-dia">
-        <h2 class="step__title" id="t-dia"><span class="step__n">1</span>Elige el día</h2>
-        <div class="days" id="days" role="radiogroup" aria-labelledby="t-dia"></div>
+        <header class="step__head"><span class="egg" aria-hidden="true">1</span><h2 id="t-dia">Elige el día</h2></header>
+        <div class="step__body">
+          <div class="days" id="days" role="radiogroup" aria-labelledby="t-dia"></div>
+        </div>
       </section>
 
       <!-- Paso 2 -->
       <section class="step" aria-labelledby="t-modo">
-        <h2 class="step__title" id="t-modo"><span class="step__n">2</span>¿Cómo vas a jugar?</h2>
-        <div class="modes" id="modes" role="radiogroup" aria-labelledby="t-modo"></div>
-        <p class="field-label" id="t-cat">Categoría en la que compites</p>
-        <div class="chips" id="cats" role="radiogroup" aria-labelledby="t-cat"></div>
-        <p class="hint">La Máquina 4 está calibrada para la categoría Pro y solo se separa con esa categoría.</p>
+        <header class="step__head"><span class="egg" aria-hidden="true">2</span><h2 id="t-modo">¿Cómo vas a jugar?</h2></header>
+        <div class="step__body">
+          <div class="modes" id="modes" role="radiogroup" aria-labelledby="t-modo"></div>
+          <p class="field-label" id="t-cat">Categoría en la que compites</p>
+          <div class="chips" id="cats" role="radiogroup" aria-labelledby="t-cat"></div>
+          <p class="hint">La Máquina 4 está calibrada para la categoría Pro y solo se separa con esa categoría.</p>
+        </div>
       </section>
 
       <!-- Paso 3 -->
       <section class="step" aria-labelledby="t-hora">
-        <h2 class="step__title" id="t-hora"><span class="step__n">3</span>Máquina y horario</h2>
-        <p class="hint">Toca un bloque libre y luego los bloques de al lado para sumar tiempo (máx. 2 h en la misma máquina).</p>
-        <ul class="legend" aria-label="Leyenda">
-          <li><i class="sw sw--free"></i>Libre</li>
-          <li><i class="sw sw--sel"></i>Tu selección</li>
-          <li><i class="sw sw--busy"></i>Ocupado</li>
-          <li><i class="sw sw--block"></i>Torneo</li>
-        </ul>
-        <div class="board-scroll">
-          <div class="board" id="board" aria-live="polite"></div>
+        <header class="step__head"><span class="egg" aria-hidden="true">3</span><h2 id="t-hora">Máquina y horario</h2></header>
+        <div class="step__body">
+          <p class="hint">Cada carril es una máquina. Toca una flecha libre para tomar 30 min y la de al lado para sumar más, hasta 2 h.</p>
+          <ul class="legend" aria-label="Leyenda">
+            <li><i class="sw sw--free"></i>Libre</li>
+            <li><i class="sw sw--sel"></i>Tu turno</li>
+            <li><i class="sw sw--busy"></i>Ocupado</li>
+            <li><i class="sw sw--block"></i>Torneo</li>
+          </ul>
+          <div class="stage">
+            <div class="board" id="board"></div>
+          </div>
         </div>
       </section>
 
       <!-- Paso 4 -->
       <section class="step" aria-labelledby="t-datos">
-        <h2 class="step__title" id="t-datos"><span class="step__n">4</span>Tus datos</h2>
-        <form class="form" id="form" novalidate>
-          <div class="field">
-            <label for="f-nombre">Nombre y apellido</label>
-            <input id="f-nombre" name="nombre" autocomplete="name" required placeholder="Ej. Camila Torres">
-          </div>
-          <div class="field">
-            <label for="f-alias">Nick de jugador</label>
-            <input id="f-alias" name="alias" required placeholder="Ej. CAMI.STEP">
-          </div>
-          <div class="field">
-            <label for="f-tel">WhatsApp</label>
-            <input id="f-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required placeholder="999 999 999">
-          </div>
-          <div class="field" id="field-p2" hidden>
-            <label for="f-p2">Nick del 2.º jugador</label>
-            <input id="f-p2" name="jugador2" placeholder="Ej. RAFA_PIU">
-          </div>
-          <label class="check" for="f-ok">
-            <input id="f-ok" name="acepto" type="checkbox" required>
-            <span>Entiendo que la máquina se libera si no pago en <b id="min-pago">15</b> minutos.</span>
-          </label>
-          <p class="error" id="form-error" role="alert" hidden></p>
-        </form>
+        <header class="step__head"><span class="egg" aria-hidden="true">4</span><h2 id="t-datos">Tus datos</h2></header>
+        <div class="step__body">
+          <form class="form" id="form" novalidate>
+            <div class="field">
+              <label for="f-nombre">Nombre y apellido</label>
+              <input id="f-nombre" name="nombre" autocomplete="name" required placeholder="Ej. Camila Torres">
+            </div>
+            <div class="field">
+              <label for="f-alias">Nick de jugador</label>
+              <input id="f-alias" name="alias" required placeholder="Ej. CAMI.STEP">
+            </div>
+            <div class="field">
+              <label for="f-tel">WhatsApp</label>
+              <input id="f-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required placeholder="999 999 999">
+            </div>
+            <div class="field" id="field-p2" hidden>
+              <label for="f-p2">Nick del 2.º jugador</label>
+              <input id="f-p2" name="jugador2" placeholder="Ej. RAFA_PIU">
+            </div>
+            <label class="check" for="f-ok">
+              <input id="f-ok" name="acepto" type="checkbox" required>
+              <span>Entiendo que la máquina se libera si no pago en <b id="min-pago">15</b> minutos.</span>
+            </label>
+            <p class="error" id="form-error" role="alert" hidden></p>
+          </form>
+        </div>
       </section>
     </div>
 
@@ -104,6 +112,7 @@
       <div class="ticket">
         <p class="ticket__head" id="t-resumen">Tu reserva</p>
         <dl class="ticket__rows" id="ticket-rows"></dl>
+        <div class="ticket__tear" aria-hidden="true"></div>
         <div class="ticket__total">
           <span>Total</span>
           <strong id="total">S/ 0</strong>
