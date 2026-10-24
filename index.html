@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Yoshiplay Reservas</title>
+  <meta name="description" content="Separa tu máquina Pump It Up Phoenix 2 para el 21 y 22 de noviembre en Yoshiplay.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <span class="wordmark" aria-label="Yoshiplay">YOSHIPLAY</span>
+      <span class="live" id="live" title="Los horarios se actualizan solos">
+        <span class="live__dot" aria-hidden="true"></span>
+        <span id="live-text">Conectando…</span>
+      </span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap hero__inner">
+      <img class="hero__mascot" src="assets/mascota.webp" alt="Yoshi, la mascota de Yoshiplay, señalando una máquina Pump It Up" width="310" height="490">
+      <div class="hero__text">
+        <p class="eyebrow">Pump It Up Phoenix 2 · 2026</p>
+        <h1>Separa tu máquina</h1>
+        <p class="hero__date">21 y 22 de noviembre</p>
+        <ul class="hero__cats" aria-label="Categorías del torneo">
+          <li>Intermedio</li><li>Avanzado</li><li>Co-op</li><li>Pro</li>
+        </ul>
+        <p class="hero__facts">4 máquinas · bloques de 30 min · hasta 2 h por reserva</p>
+      </div>
+      <svg class="hero__chevrons" viewBox="0 0 120 40" aria-hidden="true">
+        <path d="M4 4 L20 20 L4 36" /><path d="M30 4 L46 20 L30 36" /><path d="M56 4 L72 20 L56 36" />
+      </svg>
+    </div>
+  </section>
+
+  <main class="wrap layout">
+    <div class="steps">
+      <!-- Paso 1 -->
+      <section class="step" aria-labelledby="t-dia">
+        <h2 class="step__title" id="t-dia"><span class="step__n">1</span>Elige el día</h2>
+        <div class="days" id="days" role="radiogroup" aria-labelledby="t-dia"></div>
+      </section>
+
+      <!-- Paso 2 -->
+      <section class="step" aria-labelledby="t-modo">
+        <h2 class="step__title" id="t-modo"><span class="step__n">2</span>¿Cómo vas a jugar?</h2>
+        <div class="modes" id="modes" role="radiogroup" aria-labelledby="t-modo"></div>
+        <p class="field-label" id="t-cat">Categoría en la que compites</p>
+        <div class="chips" id="cats" role="radiogroup" aria-labelledby="t-cat"></div>
+        <p class="hint">La Máquina 4 está calibrada para la categoría Pro y solo se separa con esa categoría.</p>
+      </section>
+
+      <!-- Paso 3 -->
+      <section class="step" aria-labelledby="t-hora">
+        <h2 class="step__title" id="t-hora"><span class="step__n">3</span>Máquina y horario</h2>
+        <p class="hint">Toca un bloque libre y luego los bloques de al lado para sumar tiempo (máx. 2 h en la misma máquina).</p>
+        <ul class="legend" aria-label="Leyenda">
+          <li><i class="sw sw--free"></i>Libre</li>
+          <li><i class="sw sw--sel"></i>Tu selección</li>
+          <li><i class="sw sw--busy"></i>Ocupado</li>
+          <li><i class="sw sw--block"></i>Torneo</li>
+        </ul>
+        <div class="board-scroll">
+          <div class="board" id="board" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- Paso 4 -->
+      <section class="step" aria-labelledby="t-datos">
+        <h2 class="step__title" id="t-datos"><span class="step__n">4</span>Tus datos</h2>
+        <form class="form" id="form" novalidate>
+          <div class="field">
+            <label for="f-nombre">Nombre y apellido</label>
+            <input id="f-nombre" name="nombre" autocomplete="name" required placeholder="Ej. Camila Torres">
+          </div>
+          <div class="field">
+            <label for="f-alias">Nick de jugador</label>
+            <input id="f-alias" name="alias" required placeholder="Ej. CAMI.STEP">
+          </div>
+          <div class="field">
+            <label for="f-tel">WhatsApp</label>
+            <input id="f-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" required placeholder="999 999 999">
+          </div>
+          <div class="field" id="field-p2" hidden>
+            <label for="f-p2">Nick del 2.º jugador</label>
+            <input id="f-p2" name="jugador2" placeholder="Ej. RAFA_PIU">
+          </div>
+          <label class="check" for="f-ok">
+            <input id="f-ok" name="acepto" type="checkbox" required>
+            <span>Entiendo que la máquina se libera si no pago en <b id="min-pago">15</b> minutos.</span>
+          </label>
+          <p class="error" id="form-error" role="alert" hidden></p>
+        </form>
+      </section>
+    </div>
+
+    <aside class="summary" id="summary" aria-labelledby="t-resumen">
+      <div class="ticket">
+        <p class="ticket__head" id="t-resumen">Tu reserva</p>
+        <dl class="ticket__rows" id="ticket-rows"></dl>
+        <div class="ticket__total">
+          <span>Total</span>
+          <strong id="total">S/ 0</strong>
+        </div>
+        <p class="ticket__calc" id="calc"></p>
+        <button class="btn btn--go" id="confirm" type="submit" form="form">Confirmar reserva</button>
+        <p class="ticket__note">Pagas en el local o por transferencia. Te enviamos el código por WhatsApp.</p>
+      </div>
+    </aside>
+  </main>
+
+  <div class="dock" id="dock">
+    <div class="dock__info">
+      <span class="dock__label" id="dock-label">Elige un horario</span>
+      <strong class="dock__total" id="dock-total">S/ 0</strong>
+    </div>
+    <a class="btn btn--go btn--sm" href="#summary">Ver reserva</a>
+  </div>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="m-title">
+      <p class="eyebrow">Reserva separada</p>
+      <h2 id="m-title">¡Listo, <span id="m-alias"></span>!</h2>
+      <p class="modal__code" id="m-code">YP-0000</p>
+      <dl class="ticket__rows" id="m-rows"></dl>
+      <p class="modal__pay">Tienes <b id="m-min">15</b> min para pagar. Envía tu código al WhatsApp del local
+        <span class="modal__phone" id="m-phone"></span> para confirmarla.</p>
+      <div class="modal__actions">
+        <a class="btn btn--go" id="m-wa" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        <button class="btn btn--ghost" id="m-new" type="button">Hacer otra reserva</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
