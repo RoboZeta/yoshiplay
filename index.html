@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Yoshiplay Reservas</title>
-  <meta name="description" content="Separa tu máquina Pump It Up Phoenix 2 para el 21 y 22 de noviembre en Yoshiplay.">
+  <meta name="description" content="Separa tu turno en la Pump It Up Phoenix 2 LX para el 21 y 22 de noviembre en Yoshiplay.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap">
@@ -25,13 +25,10 @@
     <div class="wrap hero__inner">
       <img class="hero__mascot" src="assets/mascota.webp" alt="Yoshi, la mascota de Yoshiplay, señalando una máquina Pump It Up" width="310" height="490">
       <div class="hero__text">
-        <p class="eyebrow">Pump It Up Phoenix 2 · 2026</p>
-        <h1>Separa tu máquina</h1>
+        <p class="eyebrow">Pump It Up Phoenix 2 · LX</p>
+        <h1>Separa tu turno</h1>
         <p class="hero__date">21 y 22 de noviembre</p>
-        <ul class="hero__cats" aria-label="Categorías del torneo">
-          <li>Intermedio</li><li>Avanzado</li><li>Co-op</li><li>Pro</li>
-        </ul>
-        <p class="hero__facts">4 máquinas · bloques de 30 min · hasta 2 h por reserva</p>
+        <p class="hero__facts">Turnos de 30 min · hasta 2 h por reserva</p>
       </div>
       <svg class="hero__chevrons" viewBox="0 0 120 40" aria-hidden="true">
         <path d="M4 4 L20 20 L4 36" /><path d="M30 4 L46 20 L30 36" /><path d="M56 4 L72 20 L56 36" />
@@ -50,36 +47,28 @@
       </section>
 
       <!-- Paso 2 -->
-      <section class="step" aria-labelledby="t-modo">
-        <header class="step__head"><span class="egg" aria-hidden="true">2</span><h2 id="t-modo">¿Cómo vas a jugar?</h2></header>
-        <div class="step__body">
-          <div class="modes" id="modes" role="radiogroup" aria-labelledby="t-modo"></div>
-          <p class="field-label" id="t-cat">Categoría en la que compites</p>
-          <div class="chips" id="cats" role="radiogroup" aria-labelledby="t-cat"></div>
-          <p class="hint">La Máquina 4 está calibrada para la categoría Pro y solo se separa con esa categoría.</p>
-        </div>
-      </section>
-
-      <!-- Paso 3 -->
       <section class="step" aria-labelledby="t-hora">
-        <header class="step__head"><span class="egg" aria-hidden="true">3</span><h2 id="t-hora">Máquina y horario</h2></header>
+        <header class="step__head"><span class="egg" aria-hidden="true">2</span><h2 id="t-hora">Pisa tu horario</h2></header>
         <div class="step__body">
-          <p class="hint">Cada carril es una máquina. Toca una flecha libre para tomar 30 min y la de al lado para sumar más, hasta 2 h.</p>
+          <div class="floor-bar">
+            <p class="hint">Cada baldosa encendida es un turno libre de 30 min. Pisa una y luego la siguiente para sumar tiempo.</p>
+            <div class="seg" id="modes" role="radiogroup" aria-label="Modalidad"></div>
+          </div>
+          <div class="floor-wrap">
+            <div class="floor" id="floor"></div>
+          </div>
           <ul class="legend" aria-label="Leyenda">
             <li><i class="sw sw--free"></i>Libre</li>
             <li><i class="sw sw--sel"></i>Tu turno</li>
             <li><i class="sw sw--busy"></i>Ocupado</li>
             <li><i class="sw sw--block"></i>Torneo</li>
           </ul>
-          <div class="stage">
-            <div class="board" id="board"></div>
-          </div>
         </div>
       </section>
 
-      <!-- Paso 4 -->
+      <!-- Paso 3 -->
       <section class="step" aria-labelledby="t-datos">
-        <header class="step__head"><span class="egg" aria-hidden="true">4</span><h2 id="t-datos">Tus datos</h2></header>
+        <header class="step__head"><span class="egg" aria-hidden="true">3</span><h2 id="t-datos">Tus datos</h2></header>
         <div class="step__body">
           <form class="form" id="form" novalidate>
             <div class="field">
@@ -100,7 +89,7 @@
             </div>
             <label class="check" for="f-ok">
               <input id="f-ok" name="acepto" type="checkbox" required>
-              <span>Entiendo que la máquina se libera si no pago en <b id="min-pago">15</b> minutos.</span>
+              <span>Entiendo que el turno se libera si no pago en <b id="min-pago">15</b> minutos.</span>
             </label>
             <p class="error" id="form-error" role="alert" hidden></p>
           </form>
@@ -136,12 +125,12 @@
 
   <div class="modal" id="modal" hidden>
     <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="m-title">
-      <p class="eyebrow">Reserva separada</p>
+      <p class="eyebrow">Turno separado</p>
       <h2 id="m-title">¡Listo, <span id="m-alias"></span>!</h2>
       <p class="modal__code" id="m-code">YP-0000</p>
       <dl class="ticket__rows" id="m-rows"></dl>
       <p class="modal__pay">Tienes <b id="m-min">15</b> min para pagar. Envía tu código al WhatsApp del local
-        <span class="modal__phone" id="m-phone"></span> para confirmarla.</p>
+        <span class="modal__phone" id="m-phone"></span> para confirmarlo.</p>
       <div class="modal__actions">
         <a class="btn btn--go" id="m-wa" href="#" target="_blank" rel="noopener">Enviar por WhatsApp</a>
         <button class="btn btn--ghost" id="m-new" type="button">Hacer otra reserva</button>

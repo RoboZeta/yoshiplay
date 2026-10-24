@@ -29,21 +29,15 @@ window.YP_CONFIG = {
     { id: 'coop', nombre: 'Co-op', detalle: '2 jugadores, mismo turno', jugadores: 2, precio: 18 },
   ],
 
-  categorias: ['Intermedio', 'Avanzado', 'Co-op', 'Pro'],
+  // Una sola máquina en alquiler
+  maquinas: [{ id: 'LX', nombre: 'Phoenix 2 LX', modelo: 'Pump It Up Phoenix 2 · LX' }],
 
-  maquinas: [
-    { id: 'M1', nombre: 'Máquina 1', modelo: 'Phoenix 2 · LX', nota: 'Pads de torneo', soloPro: false },
-    { id: 'M2', nombre: 'Máquina 2', modelo: 'Phoenix 2 · LX', nota: 'Pads de torneo', soloPro: false },
-    { id: 'M3', nombre: 'Máquina 3', modelo: 'Phoenix 2 · TX', nota: 'Ideal para calentar', soloPro: false },
-    { id: 'M4', nombre: 'Máquina 4', modelo: 'Phoenix 2 · LX', nota: 'Calibrada para Pro', soloPro: true },
-  ],
-
-  // Franjas en las que las máquinas no se alquilan (rondas del torneo, mantenimiento)
+  // Franjas en las que la máquina no se alquila (rondas del torneo, mantenimiento)
   bloqueos: [
-    { dia: '2026-11-21', desde: '15:00', hasta: '17:00', maquinas: ['M1', 'M2'], motivo: 'Clasificatoria Intermedio', corto: 'Clasif. Intermedio' },
-    { dia: '2026-11-21', desde: '18:00', hasta: '20:00', maquinas: ['M1', 'M2', 'M4'], motivo: 'Clasificatoria Avanzado', corto: 'Clasif. Avanzado' },
-    { dia: '2026-11-22', desde: '14:00', hasta: '16:00', maquinas: ['M1', 'M2'], motivo: 'Torneo Co-op', corto: 'Co-op' },
-    { dia: '2026-11-22', desde: '17:00', hasta: '20:00', maquinas: ['M1', 'M2', 'M3', 'M4'], motivo: 'Final Pro', corto: 'Final Pro' },
+    { dia: '2026-11-21', desde: '15:00', hasta: '17:00', maquinas: ['LX'], motivo: 'Clasif.' },
+    { dia: '2026-11-21', desde: '18:30', hasta: '20:00', maquinas: ['LX'], motivo: 'Torneo' },
+    { dia: '2026-11-22', desde: '14:00', hasta: '15:30', maquinas: ['LX'], motivo: 'Co-op' },
+    { dia: '2026-11-22', desde: '17:00', hasta: '20:00', maquinas: ['LX'], motivo: 'Final' },
   ],
 
   minutosParaPagar: 15,
